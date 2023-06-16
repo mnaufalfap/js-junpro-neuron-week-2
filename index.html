@@ -180,6 +180,9 @@
               data.position === selectedPosition
             );
           });
+
+          var quota = selectedPositionData.quota;
+
           if (positionsInSavedData.length > 0) {
             var remainingQuota =
               selectedPositionData.quota - positionsInSavedData.length;
@@ -191,9 +194,30 @@
             } else if (remainingQuota > 0 && remainingQuota <= 2) {
               $("#positionTotal").text(
                 "Kuota tersisa untuk " +
-                  selectedVacancy +
+                  selectedPosition +
                   " hanya " +
                   remainingQuota +
+                  " pendaftar"
+              );
+            } else {
+              $("#positionTotal").text(
+                "Mohon maaf rekrutasi untuk lowongan " +
+                  selectedPosition +
+                  " sudah penuh dan tidak dapat dipilih"
+              );
+            }
+          } else {
+            if (quota > 2) {
+              $("#positionTotal").text(
+                "Anda dapat memilih lowongan " + selectedPosition
+              );
+            } else if (quota > 0 && quota <= 2) {
+              var remainingApplicants = selectedPositionData.quota;
+              $("#positionTotal").text(
+                "Kuota tersisa untuk " +
+                  selectedPosition +
+                  " hanya " +
+                  remainingApplicants +
                   " pendaftar"
               );
             } else {
