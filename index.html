@@ -60,6 +60,11 @@
         color: red;
         margin-bottom: 10px;
       }
+
+      .total {
+        color: #45a049;
+        margin-bottom: 10px;
+      }
     </style>
     <!-- Memuat jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -98,6 +103,7 @@
             <option value="">Pilih Posisi</option>
           </select>
           <div id="positionError" class="error"></div>
+          <div id="positionTotal" class="total"></div>
         </div>
         <button type="button" onclick="validateForm()">Kirim</button>
       </form>
@@ -132,7 +138,6 @@
 
       // Mengisi opsi pada elemen select "Position" berdasarkan opsi yang dipilih pada "Vacancy"
       var positionSelect = $("#position");
-      var data = "";
       vacancySelect.on("change", function () {
         var selectedVacancy = $(this).val();
         positionSelect.empty();
@@ -155,9 +160,57 @@
         }
       });
 
+      positionSelect.on("change", function () {
+        var selectedPosition = $(this).val();
+        var selectedVacancy = vacancySelect.val();
+        var selectedVacancyData = vacancyOptions.find(function (option) {
+          return option.value === selectedVacancy;
+        });
+
+        if (selectedPosition) {
+          var selectedPositionData = selectedVacancyData.positions.find(
+            function (position) {
+              return position.value === selectedPosition;
+            }
+          );
+
+          var positionsInSavedData = savedData.filter(function (data) {
+            return (
+              data.vacancy === selectedVacancy &&
+              data.position === selectedPosition
+            );
+          });
+          if (positionsInSavedData.length > 0) {
+            var remainingQuota =
+              selectedPositionData.quota - positionsInSavedData.length;
+
+            if (remainingQuota > 2) {
+              $("#positionTotal").text(
+                "Anda dapat memilih lowongan " + selectedPosition
+              );
+            } else if (remainingQuota > 0 && remainingQuota <= 2) {
+              $("#positionTotal").text(
+                "Kuota tersisa untuk " +
+                  selectedVacancy +
+                  " hanya " +
+                  remainingQuota +
+                  " pendaftar"
+              );
+            } else {
+              $("#positionTotal").text(
+                "Mohon maaf rekrutasi untuk lowongan " +
+                  selectedPosition +
+                  " sudah penuh dan tidak dapat dipilih"
+              );
+            }
+          }
+        }
+      });
+
       function validateForm() {
         // Menghapus pesan error sebelum validasi
         $(".error").empty();
+        $(".total").empty();
 
         // Mengambil nilai dari inputan
         var name = $("#name").val();
@@ -206,6 +259,11 @@
             vacancy: vacancy,
             position: position,
           };
+
+          // Cari data lowongan yang dipilih
+          var selectedVacancyData = vacancyOptions.find(function (option) {
+            return option.value === vacancy;
+          });
 
           savedData.push(data); // Menyimpan data ke dalam array
 
