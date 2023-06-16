@@ -1,205 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Rekrutasi</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Form Rekrutasi</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
 
-    .required:after {
-      content:"*";
-      color: red;
-    }
-    
-    label {
-      font-weight: bold;
-    }
+      .required:after {
+        content: "*";
+        color: red;
+      }
 
-    input {
-      max-width: 780px;
-    }
-    
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    
-    select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-    
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    button:hover {
-      background-color: #45a049;
-    }
-    
-    #result {
-      margin-top: 20px;
-    }
+      label {
+        font-weight: bold;
+      }
 
-    .error {
-      color: red;
-      margin-bottom: 10px;
-    }
-  </style>
-  <!-- Memuat jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
+      input {
+        max-width: 780px;
+      }
 
-<body>
-  <div class="container">
-    <h1>Form Rekrutasi</h1>
-    <hr>
-    <form id="recruitmentForm" autocomplete="off">
-      <div>
-        <label class="required" for="name">Fullname</label>
-        <input type="text" id="name" placeholder="Masukkan Nama Lengkap">
-        <div id="nameError" class="error"></div>
-      </div>
-      <div>
-        <label class="required" for="email">Email</label>
-        <input type="email" id="email" placeholder="Masukkan Email">
-        <div id="emailError" class="error"></div>
-      </div>
-      <div>
-        <label class="required" for="phone">Phone Number</label>
-        <input type="tel" id="phone" placeholder="Masukkan Nomor Telephone">
-        <div id="phoneError" class="error"></div>
-      </div>
-      <div>
-        <label class="required" for="vacancy">Vacancy</label>
-        <select id="vacancy">
-          <option value="">Pilih Lowongan</option>
-        </select>
-        <div id="vacancyError" class="error"></div>
-      </div>
-      <div>
-        <label class="required" for="position">Position</label>
-        <select id="position">
-          <option value="">Pilih Posisi</option>
-        </select>
-        <div id="positionError" class="error"></div>
-      </div>
-      <button type="button" onclick="validateForm()">Kirim</button>
-    </form>
-    <hr>
-    <div id="result"></div>
-  </div>
-  
-  <script>
-    // Data array untuk opsi vacancy dan position
-    var vacancyOptions = [
-      { value: 'System Administrator', label: 'System Administrator', positions: ['System Administrator - BANDUNG', 'System Administrator - JAKARTA'] },
-      { value: 'Web Developer', label: 'Web Developer', positions: ['Web Developer - BANDUNG'] }
-    ];
-    
-    // Mengisi opsi pada elemen select "Vacancy"
-    var vacancySelect = $('#vacancy');
-    $.each(vacancyOptions, function(index, option) {
-      vacancySelect.append('<option value="' + option.value + '">' + option.label + '</option>');
-    });
-    
-    // Mengisi opsi pada elemen select "Position" berdasarkan opsi yang dipilih pada "Vacancy"
-    var positionSelect = $('#position');
-    vacancySelect.on('change', function() {
-      var selectedVacancy = $(this).val();
-      positionSelect.empty();
-      positionSelect.append('<option value="">Pilih Posisi</option>');
-      
-      if (selectedVacancy) {
-        var selectedVacancyData = vacancyOptions.find(function(option) {
-          return option.value === selectedVacancy;
-        });
-        
-        $.each(selectedVacancyData.positions, function(index, position) {
-          positionSelect.append('<option value="' + position + '">' + position + '</option>');
-        });
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
       }
-    });
-    function validateForm() {
-      // Menghapus pesan error sebelum validasi
-      $('.error').empty();
-      
-      // Mengambil nilai dari inputan
-      var name = $('#name').val();
-      var email = $('#email').val();
-      var phone = $('#phone').val();
-      var vacancy = $('#vacancy').val();
-      var position = $('#position').val();
-      
-      // Validasi inputan
-      var isValid = true;
-      
-      if (name === '') {
-        $('#nameError').text('Nama tidak boleh kosong');
-        isValid = false;
-      }
-      
-      if (email === '') {
-        $('#emailError').text('Email tidak boleh kosong');
-        isValid = false;
-      }
-      
-      if (phone === '') {
-        $('#phoneError').text('Phone Number tidak boleh kosong');
-        isValid = false;
-      }
-      
-      if (vacancy === '') {
-        $('#vacancyError').text('Vacancy tidak boleh kosong');
-        isValid = false;
-      }
-      
-      if (position === '') {
-        $('#positionError').text('Position tidak boleh kosong');
-        isValid = false;
-      }
-      
-      // Jika semua inputan valid, tampilkan hasil
-      if (isValid) {
-        showMessage();
-        $('#recruitmentForm')[0].reset(); // Mengatur form ke kondisi semula
-      }
-    }
-    
-    function showMessage() {
-      var name = $('#name').val();
-      var email = $('#email').val();
-      var phone = $('#phone').val();
-      var vacancy = $('#vacancy').val();
-      var position = $('#position').val();
-      
-      var result = '<h4 style="color: #45a049;">Terimakasih telah melakukan pengisian, permintaan anda akan segera kami proses</h4>' +
-                   '<p><strong>Full Name</strong><br> ' + name + '</p>' +
-                   '<p><strong>Email</strong><br> ' + email + '</p>' +
-                   '<p><strong>Phone Number</strong><br> ' + phone + '</p>' +
-                   '<p><strong>Vacancy</strong><br> ' + vacancy + '</p>' +
-                   '<p><strong>Position</strong><br> ' + position + '</p>';
-      
-      $('#result').html(result);
-    }
-  </script>
-</body>
 
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #result {
+        margin-top: 20px;
+      }
+
+      .error {
+        color: red;
+        margin-bottom: 10px;
+      }
+    </style>
+    <!-- Memuat jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Form Rekrutasi</h1>
+      <hr />
+      <form id="recruitmentForm" autocomplete="off">
+        <div>
+          <label class="required" for="name">Fullname</label>
+          <input type="text" id="name" placeholder="Masukkan Nama Lengkap" />
+          <div id="nameError" class="error"></div>
+        </div>
+        <div>
+          <label class="required" for="email">Email</label>
+          <input type="email" id="email" placeholder="Masukkan Email" />
+          <div id="emailError" class="error"></div>
+        </div>
+        <div>
+          <label class="required" for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="Masukkan Nomor Telephone" />
+          <div id="phoneError" class="error"></div>
+        </div>
+        <div>
+          <label class="required" for="vacancy">Vacancy</label>
+          <select id="vacancy">
+            <option value="">Pilih Lowongan</option>
+          </select>
+          <div id="vacancyError" class="error"></div>
+        </div>
+        <div>
+          <label class="required" for="position">Position</label>
+          <select id="position">
+            <option value="">Pilih Posisi</option>
+          </select>
+          <div id="positionError" class="error"></div>
+        </div>
+        <button type="button" onclick="validateForm()">Kirim</button>
+      </form>
+      <hr />
+      <div id="result"></div>
+    </div>
+
+    <script>
+      var savedData = []; // Array untuk menyimpan data yang telah di-submit
+
+      // Data array untuk opsi vacancy dan position
+      var vacancyOptions = [
+        {
+          value: "System Administrator",
+          label: "System Administrator",
+          positions: [{ value: "System Administrator - JAKARTA", quota: 1 }],
+        },
+        {
+          value: "Web Developer",
+          label: "Web Developer",
+          positions: [{ value: "Web Developer - BANDUNG", quota: 3 }],
+        },
+      ];
+
+      // Mengisi opsi pada elemen select "Vacancy"
+      var vacancySelect = $("#vacancy");
+      $.each(vacancyOptions, function (index, option) {
+        vacancySelect.append(
+          '<option value="' + option.value + '">' + option.label + "</option>"
+        );
+      });
+
+      // Mengisi opsi pada elemen select "Position" berdasarkan opsi yang dipilih pada "Vacancy"
+      var positionSelect = $("#position");
+      var data = "";
+      vacancySelect.on("change", function () {
+        var selectedVacancy = $(this).val();
+        positionSelect.empty();
+        positionSelect.append('<option value="">Pilih Posisi</option>');
+
+        if (selectedVacancy) {
+          var selectedVacancyData = vacancyOptions.find(function (option) {
+            return option.value === selectedVacancy;
+          });
+
+          $.each(selectedVacancyData.positions, function (index, position) {
+            positionSelect.append(
+              '<option value="' +
+                position.value +
+                '">' +
+                position.value +
+                "</option>"
+            );
+          });
+        }
+      });
+
+      function validateForm() {
+        // Menghapus pesan error sebelum validasi
+        $(".error").empty();
+
+        // Mengambil nilai dari inputan
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        var vacancy = $("#vacancy").val();
+        var position = $("#position").val();
+
+        // Validasi inputan
+        var isValid = true;
+
+        if (name === "") {
+          $("#nameError").text("Nama tidak boleh kosong");
+          isValid = false;
+        }
+
+        if (email === "") {
+          $("#emailError").text("Email tidak boleh kosong");
+          isValid = false;
+        } else if (isEmailRegistered(email)) {
+          $("#emailError").text("Email sudah terdaftar");
+          isValid = false;
+        }
+
+        if (phone === "") {
+          $("#phoneError").text("Phone Number tidak boleh kosong");
+          isValid = false;
+        }
+
+        if (vacancy === "") {
+          $("#vacancyError").text("Vacancy tidak boleh kosong");
+          isValid = false;
+        }
+
+        if (position === "") {
+          $("#positionError").text("Position tidak boleh kosong");
+          isValid = false;
+        }
+
+        // Jika semua inputan valid, tampilkan hasil
+        if (isValid) {
+          var data = {
+            name: name,
+            email: email,
+            phone: phone,
+            vacancy: vacancy,
+            position: position,
+          };
+
+          savedData.push(data); // Menyimpan data ke dalam array
+
+          // Simpan data ke localStorage
+          localStorage.setItem("savedData", JSON.stringify(savedData));
+
+          showMessage();
+
+          $("#recruitmentForm")[0].reset(); // Mengatur form ke kondisi semula
+        }
+      }
+
+      function isEmailRegistered(email) {
+        for (var i = 0; i < savedData.length; i++) {
+          if (savedData[i].email === email) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // Memuat data dari localStorage saat halaman dimuat
+      $(document).ready(function () {
+        if (localStorage.getItem("savedData")) {
+          savedData = JSON.parse(localStorage.getItem("savedData"));
+          //showMessage();
+        }
+      });
+
+      function showMessage() {
+        // Notifikasi jumlah pendaftar
+        var applicantCount = savedData.length;
+        //$("#result").prepend("<p>Jumlah pendaftar: " + applicantCount + "</p>");
+
+        var result =
+          '<h4 style="color: #45a049;">Terimakasih telah melakukan pengisian, permintaan anda akan segera kami proses</h4>';
+
+        if (savedData.length > 0) {
+          var lastData = savedData[savedData.length - 1]; // Mengambil data terakhir dari array
+
+          result +=
+            "<p>Jumlah pendaftar: " +
+            applicantCount +
+            "</p>" +
+            "<p><strong>Full Name</strong><br> " +
+            lastData.name +
+            "</p>" +
+            "<p><strong>Email</strong><br> " +
+            lastData.email +
+            "</p>" +
+            "<p><strong>Phone Number</strong><br> " +
+            lastData.phone +
+            "</p>" +
+            "<p><strong>Vacancy</strong><br> " +
+            lastData.vacancy +
+            "</p>" +
+            "<p><strong>Position</strong><br> " +
+            lastData.position +
+            "</p>";
+        } else {
+          result += "<p>Tidak ada data yang disimpan.</p>";
+        }
+        $("#result").html(result);
+      }
+    </script>
+  </body>
 </html>
